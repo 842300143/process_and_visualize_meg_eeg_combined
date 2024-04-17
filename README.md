@@ -1,6 +1,6 @@
-镜像封装利用Xvfb在Docker环境下运行图形化界面程序
-# 1. 本地修改
-## 1.1 环境创建
+# 镜像封装利用Xvfb在Docker环境下运行图形化界面程序
+## 1. 本地修改
+### 1.1 环境创建
   首先你需要安装docker desktop，这里使用的是windows平台，所以直接在官网下载安装即可，安装完成后开始下一步[下载地址](https://docs.docker.com/desktop/install/windows-install/)。当然，在此之前你需要在注册相关账号以及在微软商店下载wsl[下载地址](https://learn.microsoft.com/en-us/windows/wsl/install)。
   其次需要配置一个python环境进行代码运行，这里使用的是Anaconda进行版本管理，在官网下载并安装完成后开始下一步[下载地址]((https://www.anaconda.com/download)。安装后打开命令行，使用下述命令创建环境并进行激活。
 
@@ -9,7 +9,7 @@ conda create --name <name>
 conda activate <name>
 ```
 上述命令中，`<name>`表示环境的名称。
-## 1.2 测试代码编写
+### 1.2 测试代码编写
 这一步需要完成容器内部代码的编写，本文需要三个文件代码，首先为主函数[ESL](https://github.com/842300143/process_and_visualize_meg_eeg_combined)，其次为:
 ```
 ~~~input_params.py
@@ -64,13 +64,13 @@ Xvfb :1 -screen 0 1280x1024x24 -ac &
 
 python process_and_visualize_meg_eeg_combined.py
 ```
-## 1.3 导出程序运行依赖
+### 1.3 导出程序运行依赖
 以Python为例，对于使用venv管理的项目，可以直接在venv环境下使用下面的命令直接导出依赖项：
 ```
 pip freeze > requirements.txt
 ```
-# 2. 构建Docker镜像
-## 2.1 编写Dockerfile
+## 2. 构建Docker镜像
+### 2.1 编写Dockerfile
 要将算法代码与相关运行环境进行打包为Docker镜像，需要编写Dockerfile，明确功能模块运行时需要的依赖项、配置和环境，指导Docker如何构建镜像。以下为封装Python算法的Dockerfile例子：
 ```
 # 从Python3.10构建基础镜像
@@ -106,7 +106,7 @@ ENV DEPTH 0.8
 ENTRYPOINT ["/bin/sh", "-c", "./startup.sh"]
 ```
 在编辑完Dockerfile之后保存到源代码目录下，并将整个源代码目录复制到带有Docker的运行环境中，为创建镜像做准备。
-## 2.2 创建Docker镜像
+### 2.2 创建Docker镜像
 首先进入到Dockerfile所在的目录，在命令行中运行相关的命令进行镜像构建。
 ```
 docker build . -t <imagename>:<version>
@@ -116,13 +116,13 @@ docker build . -t <imagename>:<version>
 docker images
 ```
 命令查看本地已有的Docker镜像文件。
-## 2.3 使用Docker镜像创建容器进行测试
+### 2.3 使用Docker镜像创建容器进行测试
 对已经创建好的Docker镜像通过本地运行容器进行测试，确保其工作正常。首先创建一个文件进行挂载，本文创建一个docker-test文件夹进行测试，将测试数据暨dockerfile，process_and_visualize_meg_eeg_combined，get_params.py,requirements.txt是必须的，以及本测试代码需要的startup.sh，MNE-sample-data-processed放在文件夹内，使用以下命令创建Docker镜像：
 ```
 docker run -it -v /home/mwl/Userdir:/Userdir -e METHOD=dSPM -e COMBINED_FWD_FNAME=combine-fwd.fif -e SCREENSHOTS_DIR=images  -e DATADIR=/Userdir -e N_CALLS=50 -e SNR=3.0 -e DEPTH=0.8 -e DEBIAN_FRONTEND=noninteractive -e DISPLAY=:1 -e QT_DEBUG_PLUGINS=1 <imagename>:<version>
 ```
 其中，`-it`代表交互式运行，`-v`代表挂载，这里的挂载是指将宿主机的文件夹挂载到容器内部，这里的`Userdir`代表容器内部文件夹，`-e`代表添加环境变量或者覆盖原有的环境变量，`<imagename>:<version>`表示刚刚构建的镜像。通过使用此镜像运行的容器镜像测试，观察输出结果是否符合预期。
-## 2.4 导出Docker镜像归档文件
+### 2.4 导出Docker镜像归档文件
 当确定镜像通过测试后，使用以下命令即可将镜像导出为归档文件：
 ```
 docker save  -o <image.tar> <image>
