@@ -2,7 +2,7 @@
 ## 1. 本地修改
 ### 1.1 环境创建
   首先你需要安装docker desktop，这里使用的是windows平台，所以直接在官网下载安装即可，安装完成后开始下一步[下载地址](https://docs.docker.com/desktop/install/windows-install/)。当然，在此之前你需要在注册相关账号以及在微软商店下载wsl[下载地址](https://learn.microsoft.com/en-us/windows/wsl/install)。
-  其次需要配置一个python环境进行代码运行，这里使用的是Anaconda进行版本管理，在官网下载并安装完成后开始下一步[下载地址]((https://www.anaconda.com/download)。安装后打开命令行，使用下述命令创建环境并进行激活。
+  其次需要配置一个python环境进行代码运行，这里使用的是Anaconda进行版本管理，在官网下载并安装完成后开始下一步[下载地址](https://www.anaconda.com/download)。安装后打开命令行，使用下述命令创建环境并进行激活。
 
 ```
 conda create --name <name>
